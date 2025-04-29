@@ -108,7 +108,7 @@ function App() {
     };
     await axios
       .post(
-        "https://gsm-marketplace-back-gsm-back-develop.apps.gsmapp.dev/api/v1/dispatch/dispatch-options/",
+        "https://gsm-marketplace-back-gsm-back-develop.apps.gsmapp.dev/api/v1/dispatch/dispatch/dispatch-available-plans/",
         body,
         {
           headers: {
