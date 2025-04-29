@@ -16,7 +16,12 @@ function App() {
 
   const [products, setProducts] = useState([]);
   const [addresses, setAddresses] = useState([]);
-  const [authToken, setAuthToken] = useState("");
+  const [authToken, setAuthToken] = useState(
+    localStorage.getItem("authToken") &&
+      localStorage.getItem("authToken").length
+      ? localStorage.getItem("authToken")
+      : null
+  );
   const [profileData, setProfileData] = useState({});
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -107,7 +112,7 @@ function App() {
         body,
         {
           headers: {
-            Authorization: authTokenFromStorage,
+            Authorization: authToken,
             "Content-Type": "application/json",
           },
         }
@@ -127,18 +132,18 @@ function App() {
     fetchProducts();
   }, []);
 
-  const authTokenFromStorage =
-    localStorage.getItem("authToken") &&
-    localStorage.getItem("authToken").length
-      ? localStorage.getItem("authToken")
-      : null;
+  // const authTokenFromStorage =
+  //   localStorage.getItem("authToken") &&
+  //   localStorage.getItem("authToken").length
+  //     ? localStorage.getItem("authToken")
+  //     : null;
 
   useEffect(() => {
-    if (authTokenFromStorage) {
-      fetchAddresses(authTokenFromStorage);
-      fetchProfile(authTokenFromStorage);
+    if (authToken) {
+      fetchAddresses(authToken);
+      fetchProfile(authToken);
     }
-  }, [authTokenFromStorage]);
+  }, [authToken]);
 
   const debouncedFetchProducts = useMemo(
     () => debounce(fetchProducts, 1000),
@@ -200,7 +205,7 @@ function App() {
         id="outlined-basic"
         label="Authorization Code"
         variant="outlined"
-        defaultValue={authTokenFromStorage ?? "Bearer ..."}
+        defaultValue={authToken ?? "Bearer ..."}
         sx={{ mb: 2, width: 1000 }}
         onChange={(e) => {
           setAuthToken(e.target.value);
