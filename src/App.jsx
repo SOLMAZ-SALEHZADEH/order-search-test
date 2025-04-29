@@ -140,14 +140,6 @@ function App() {
         }
   }, []);
 
-
-  // useEffect(() => {
-  //   if (authToken) {
-  //     fetchAddresses(authToken);
-  //     fetchProfile(authToken);
-  //   }
-  // }, [authToken]);
-
   const debouncedFetchProducts = useMemo(
     () => debounce(fetchProducts, 1000),
     []
