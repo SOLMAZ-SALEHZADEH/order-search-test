@@ -7,9 +7,9 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import debounce from "lodash/debounce";
+import { prettyPrintJson } from 'pretty-print-json';
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
-import { prettyPrintJson } from 'pretty-print-json';
 
 function App() {
   const User_Selected_Plan = ["PICK_IN_STORE", "ON_DEMAND", "STANDARD"];
@@ -314,6 +314,8 @@ function App() {
         <div style={{ marginTop: "2rem" }}>
           <h2 style={{ textAlign: "left" }}>API Response:</h2>
           <div
+         dir="ltr"
+         style={{textAlign:'left'}}
             dangerouslySetInnerHTML={{
               __html: prettyPrintJson.toHtml(apiResponse, {   indent:  3 ,    
                 lineNumbers:    true,  //wrap HTML in an <ol> tag to support line numbers
