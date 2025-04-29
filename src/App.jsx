@@ -22,6 +22,7 @@ function App() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [apiResponse, setApiResponse] = useState(null);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const fetchProducts = async (query = "") => {
     try {
@@ -61,8 +62,10 @@ function App() {
         setAddresses(response.data?.results || []);
       })
       .catch((error) => {
-        console.log(error)
-        alert(`${error?.response?.data?.code} ,auth code را به درستی وارد کنید`);
+        console.log(error);
+        alert(
+          `${error?.response?.data?.code} ,auth code را به درستی وارد کنید`
+        );
       });
   }
 
@@ -88,18 +91,18 @@ function App() {
   }
 
   const handleSubmitSearch = async () => {
+    setSubmitLoading(true);
     if (!selectedProduct || !selectedAddress) {
       alert("Please select product, address");
       return;
     }
-
-    try {
-      const body = {
-        user_address_id: selectedAddress.id,
-        product_id: selectedProduct.id,
-        user_selected_plan: selectedPlan,
-      };
-      const response = await axios.post(
+    const body = {
+      user_address_id: selectedAddress.id,
+      product_id: selectedProduct.id,
+      user_selected_plan: selectedPlan,
+    };
+    await axios
+      .post(
         "https://gsm-marketplace-back-gsm-back-develop.apps.gsmapp.dev/api/v1/dispatch/dispatch-options/",
         body,
         {
@@ -108,11 +111,16 @@ function App() {
             "Content-Type": "application/json",
           },
         }
-      );
-      setApiResponse(response.data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
+      )
+      .then((response) => {
+        setApiResponse(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setSubmitLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -205,6 +213,7 @@ function App() {
           localStorage.setItem("authToken", authToken);
           fetchAddresses(authToken);
         }}
+        disabled={!authToken}
       >
         Authorize
       </Button>
@@ -313,6 +322,7 @@ function App() {
             onClick={() => {
               handleSubmitSearch();
             }}
+            loading={submitLoading}
           >
             submit search
           </Button>
