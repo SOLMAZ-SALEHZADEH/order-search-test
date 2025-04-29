@@ -130,20 +130,23 @@ function App() {
 
   useEffect(() => {
     fetchProducts();
+    if(
+      localStorage.getItem("authToken") &&
+        localStorage.getItem("authToken").length
+        ? localStorage.getItem("authToken")
+        : null){
+          fetchAddresses(authToken);
+          fetchProfile(authToken);
+        }
   }, []);
 
-  // const authTokenFromStorage =
-  //   localStorage.getItem("authToken") &&
-  //   localStorage.getItem("authToken").length
-  //     ? localStorage.getItem("authToken")
-  //     : null;
 
-  useEffect(() => {
-    if (authToken) {
-      fetchAddresses(authToken);
-      fetchProfile(authToken);
-    }
-  }, [authToken]);
+  // useEffect(() => {
+  //   if (authToken) {
+  //     fetchAddresses(authToken);
+  //     fetchProfile(authToken);
+  //   }
+  // }, [authToken]);
 
   const debouncedFetchProducts = useMemo(
     () => debounce(fetchProducts, 1000),
@@ -217,6 +220,7 @@ function App() {
         onClick={() => {
           localStorage.setItem("authToken", authToken);
           fetchAddresses(authToken);
+          fetchProfile(authToken);
         }}
         disabled={!authToken}
       >
