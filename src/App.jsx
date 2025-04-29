@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import debounce from "lodash/debounce";
-import { prettyPrintJson } from 'pretty-print-json';
+import { prettyPrintJson } from "pretty-print-json";
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
@@ -43,21 +43,24 @@ function App() {
   };
 
   async function fetchAddresses(authToken) {
-    const response = await axios.get(
-      "https://gsm-marketplace-back-gsm-back-develop.apps.gsmapp.dev/api/v1/address/user-address/",
-      {
-        params: {
-          page_size: 10,
-          page: 1,
-        },
+      await axios.get(
+        "https://gsm-marketplace-back-gsm-back-develop.apps.gsmapp.dev/api/v1/address/user-address/",
+        {
+          params: {
+            page_size: 10,
+            page: 1,
+          },
 
-        headers: {
-          Authorization: authToken,
-        },
-      }
-    );
-    return response.data;
+          headers: {
+            Authorization: authToken,
+          },
+        }
+      )
+      .then((response) => {      setAddresses(response.data?.results || []);}).catch((error) => {
+        alert(error?.response?.data?.messages[0]?.message)
+      });
   }
+
   async function fetchProfile(authToken) {
     try {
       const response = await axios.get(
@@ -111,13 +114,15 @@ function App() {
     fetchProducts();
   }, []);
 
-  const authTokenFromStorage = localStorage.getItem("authToken") && localStorage.getItem("authToken").length ?  localStorage.getItem("authToken") : null
+  const authTokenFromStorage =
+    localStorage.getItem("authToken") &&
+    localStorage.getItem("authToken").length
+      ? localStorage.getItem("authToken")
+      : null;
 
   useEffect(() => {
     if (authTokenFromStorage) {
-      fetchAddresses(authTokenFromStorage).then((data) => {
-        setAddresses(data?.results);
-      });
+      fetchAddresses(authTokenFromStorage)
       fetchProfile(authTokenFromStorage);
     }
   }, [authTokenFromStorage]);
@@ -193,9 +198,7 @@ function App() {
         sx={{ mb: 8, display: "block" }}
         onClick={() => {
           localStorage.setItem("authToken", authToken);
-          fetchAddresses(authToken).then((data) => {
-            setAddresses(data?.results);
-          });
+          fetchAddresses(authToken)
         }}
       >
         Authorize
@@ -314,14 +317,16 @@ function App() {
         <div style={{ marginTop: "2rem" }}>
           <h2 style={{ textAlign: "left" }}>API Response:</h2>
           <div
-         dir="ltr"
-         style={{textAlign:'left'}}
+            dir="ltr"
+            style={{ textAlign: "left" }}
             dangerouslySetInnerHTML={{
-              __html: prettyPrintJson.toHtml(apiResponse, {   indent:  3 ,    
-                lineNumbers:    true,  //wrap HTML in an <ol> tag to support line numbers
+              __html: prettyPrintJson.toHtml(apiResponse, {
+                indent: 3,
+                lineNumbers: true, //wrap HTML in an <ol> tag to support line numbers
                 // quoteKeys:      true,  //always double quote key names
-                trailingCommas: true,  //append a comma after the last item in arrays and objects}), // Render the pretty JSON
-            })}}
+                trailingCommas: true, //append a comma after the last item in arrays and objects}), // Render the pretty JSON
+              }),
+            }}
           />
         </div>
       )}
