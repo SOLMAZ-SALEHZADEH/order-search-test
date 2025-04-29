@@ -111,7 +111,7 @@ function App() {
     fetchProducts();
   }, []);
 
-  const authTokenFromStorage = localStorage.getItem("authToken");
+  const authTokenFromStorage = localStorage.getItem("authToken").length ?  localStorage.getItem("authToken") : null
 
   useEffect(() => {
     if (authTokenFromStorage) {
