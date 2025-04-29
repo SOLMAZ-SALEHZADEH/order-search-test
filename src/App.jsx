@@ -97,10 +97,6 @@ function App() {
 
   const handleSubmitSearch = async () => {
     setSubmitLoading(true);
-    if (!selectedProduct || !selectedAddress) {
-      alert("Please select product, address");
-      return;
-    }
     const body = {
       user_address_id: selectedAddress.id,
       product_id: selectedProduct.id,
@@ -324,6 +320,7 @@ function App() {
               handleSubmitSearch();
             }}
             loading={submitLoading}
+            disabled={!selectedProduct || !selectedAddress}
           >
             submit search
           </Button>
