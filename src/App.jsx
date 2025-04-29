@@ -43,7 +43,8 @@ function App() {
   };
 
   async function fetchAddresses(authToken) {
-      await axios.get(
+    await axios
+      .get(
         "https://gsm-marketplace-back-gsm-back-develop.apps.gsmapp.dev/api/v1/address/user-address/",
         {
           params: {
@@ -56,8 +57,12 @@ function App() {
           },
         }
       )
-      .then((response) => {      setAddresses(response.data?.results || []);}).catch((error) => {
-        alert(error?.response?.data?.messages[0]?.message)
+      .then((response) => {
+        setAddresses(response.data?.results || []);
+      })
+      .catch((error) => {
+        console.log(error)
+        alert(`${error?.response?.data?.code} ,auth code را به درستی وارد کنید`);
       });
   }
 
@@ -122,7 +127,7 @@ function App() {
 
   useEffect(() => {
     if (authTokenFromStorage) {
-      fetchAddresses(authTokenFromStorage)
+      fetchAddresses(authTokenFromStorage);
       fetchProfile(authTokenFromStorage);
     }
   }, [authTokenFromStorage]);
@@ -198,7 +203,7 @@ function App() {
         sx={{ mb: 8, display: "block" }}
         onClick={() => {
           localStorage.setItem("authToken", authToken);
-          fetchAddresses(authToken)
+          fetchAddresses(authToken);
         }}
       >
         Authorize
